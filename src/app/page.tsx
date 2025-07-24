@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {  
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const blogareaRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const handleGenerateBlog = async () => {
     const content = textareaRef.current?.value || "";
@@ -15,6 +16,8 @@ export default function Home() {
       alert("Please enter a topic for your blog!");
       return;
     }
+
+    setIsLoading(true);
 
     if (blogareaRef.current) {
       blogareaRef.current.innerHTML = "<p>Generating your blog post...</p>";
@@ -57,6 +60,8 @@ export default function Home() {
       if (blogareaRef.current) {
         blogareaRef.current.innerHTML = `<p style="color: red;">Error: Failed to generate blog post. Please make sure the API server is running on port 5000.</p>`;
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,8 +80,17 @@ export default function Home() {
           name="text" 
           className="input"
         />
-        <button className="btn" onClick={handleGenerateBlog}>
-            <span className="btn-text-one">+</span>
+        <button 
+          className="btn" 
+          onClick={handleGenerateBlog}
+          disabled={isLoading}
+          style={{ opacity: isLoading ? 0.7 : 1 }}
+        >
+          <div className="loader">
+            <div className={`loading_bar ${isLoading ? 'animate' : ''}`}></div>
+            <div className={`loading_bar ${isLoading ? 'animate' : ''}`}></div>
+            <div className={`loading_bar ${isLoading ? 'animate' : ''}`}></div>
+          </div>
         </button>
       </div>
     </div>
