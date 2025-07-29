@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import MDXContent from "./components/mdx-content";
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 
 export default function Home() {  
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -81,6 +81,45 @@ export default function Home() {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!contentRef.current || !blogContent) return;
+    
+    setIsDownloading(true);
+    
+    try {
+      const element = contentRef.current;
+      
+      const canvas = await html2canvas(element, {
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      
+      const topic = textareaRef.current?.value || 'note';
+      const filename = `${topic.replace(/\s+/g, '_')}.pdf`;
+      
+      pdf.save(filename);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div>
       <div className="content-area">
@@ -107,6 +146,28 @@ export default function Home() {
                 ) : (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                )}
+              </button>
+              {/* PDF Download Button */}
+              <button
+                onClick={handleDownloadPDF}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  isDownloading 
+                    ? 'bg-blue-500 text-white shadow-lg' 
+                    : 'bg-white/90 hover:bg-white text-gray-600 hover:text-gray-800 shadow-md hover:shadow-lg border border-gray-200'
+                }`}
+                title="Download as PDF"
+                disabled={isDownloading || !blogContent}
+              >
+                {isDownloading ? (
+                  <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 )}
               </button>

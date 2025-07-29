@@ -55,16 +55,16 @@ export function preprocessMarkdownForMDX(content: string): string {
     return `${codeBlockPlaceholder}${codeBlocks.length - 1}${codeBlockPlaceholder}`
   })
 
-  // Extract any remaining code-like patterns that might contain braces
-  processed = processed.replace(/\{[^}]*\}/g, (match) => {
-    // Only extract if it looks like code (contains keywords, operators, etc.)
-    if (match.includes('::') || match.includes('<<') || match.includes('cout') || match.includes('endl') || 
-        match.includes('public:') || match.includes('private:') || match.includes('protected:')) {
-      codeBlocks.push(match)
-      return `${codeBlockPlaceholder}${codeBlocks.length - 1}${codeBlockPlaceholder}`
+    // Extract any remaining code-like patterns that might contain braces
+    const codeIndicators = /;|==|!=|<=|>=|&&|\|\||!|\b(if|else|for|while|function|def|class|public|private|protected|int|float|string|var|let|const)\b/g;
+
+    processed = processed.replace(/\{[^}]*\}/g, (match) => {
+    if (codeIndicators.test(match)) {
+        codeBlocks.push(match);
+        return `${codeBlockPlaceholder}${codeBlocks.length - 1}${codeBlockPlaceholder}`;
     }
-    return match
-  })
+    return match;
+    });
 
   // Now safely escape remaining problematic characters
   processed = processed.replace(/\{/g, '\\{')
@@ -80,7 +80,7 @@ export function preprocessMarkdownForMDX(content: string): string {
   // Handle numbered sections more intelligently
   processed = processed.replace(/^([IVXLCDM]+\.|Chapter\s+\d+|Section\s+\d+)\s+(.+)$/gm, '## $1 $2')
   processed = processed.replace(/^(\d+[\.\)])\s+(.+)$/gm, '### $1 $2')
-  
+   
   // Handle labels (word followed by colon) as headings or special components
   processed = processed.replace(/^([A-Za-z][A-Za-z\s]*?):\s*(.*)$/gm, (match, label, content) => {
     if (content.trim()) {
