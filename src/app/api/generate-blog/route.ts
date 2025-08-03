@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     // Forward the request to your backend server
-    const response = await fetch('ai-agent-server-production-cfdb.up.railway.app/generate-blog', {
+    const response = await fetch('https://ai-agent-server-production-cfdb.up.railway.app/generate-blog', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
