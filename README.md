@@ -1,10 +1,10 @@
 AI Note Creator
 
-Welcome to the AI Note Creator, a powerful tool designed to generate educational notes tailored to your needs! This application leverages advanced AI to create structured, student-friendly notes based on specified topics and levels.
+Welcome to the AI Note Creator, a powerful tool designed to generate educational notes tailored to your needs! This Flask-based web application leverages advanced AI to create structured, student-friendly notes based on specified topics and levels.
 
 Overview
 
-The AI Note Creator is a Flask-based web application that uses a crew of AI agents to plan, write, and edit educational content. It has been successfully deployed and is now accessible online.
+The AI Note Creator uses a crew of AI agents to plan, write, and edit educational content. It has been successfully deployed and is now live for public use.
 
 Deployment Details
 
@@ -12,7 +12,7 @@ Deployment Details
 
 
 
-Platform: Deployed on Railway.
+Platform: Deployed on a web hosting service.
 
 
 
@@ -24,7 +24,7 @@ Status: Live and operational.
 
 Accessing the Web App
 
-Visit the live application at: https://ai-agent-server-production-565e.up.railway.app/
+Visit the live application at: https://www.pixelyardstudios.com/
 
 How to Use
 
@@ -40,7 +40,7 @@ Use the /generate-blog endpoint with a POST request to create notes. Send a JSON
 
 
 
-Check the /health endpoint to verify the app's status with a GET request.
+Check the /health endpoint with a GET request to verify the app's status.
 
 Features
 
@@ -82,4 +82,4 @@ Run python app.py and access it at http://localhost:5000.
 
 Support
 
-For any issues or questions, please refer to the deployment logs on Railway or contact the project maintainer.
+For any issues or questions, please check the deployment logs or contact the project maintainer.
